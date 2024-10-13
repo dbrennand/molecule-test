@@ -1,6 +1,6 @@
 ---
 - name: Test new role from within this playbook
-  hosts: localhost
+  hosts: "{{ target | default('molecule') }}"
   gather_facts: false
   tasks:
     - name: Testing role

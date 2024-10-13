@@ -1,35 +1,27 @@
----
 - name: Create
   hosts: localhost
-  connection: local
   gather_facts: false
-  # no_log: "{{ molecule_no_log }}"
+  vars:
+    molecule_inventory:
+      all:
+        children:
+          molecule:
+            hosts:
+              httpbin.org:
   tasks:
-    # TODO: Developer must implement and populate 'server' variable
+    - name: Dump molecule_inventory
+      ansible.builtin.copy:
+        content: |
+          {{ molecule_inventory | to_yaml }}
+        dest: "{{ molecule_ephemeral_directory }}/inventory/molecule_inventory.yml"
+        mode: "0600"
 
-    - name: Create instance config
-      when: server.changed | default(false) | bool  # noqa no-handler
-      block:
-        - name: Populate instance config dict  # noqa jinja
-          ansible.builtin.set_fact:
-            instance_conf_dict: {}
-            # instance': "{{ }}",
-            # address': "{{ }}",
-            # user': "{{ }}",
-            # port': "{{ }}",
-            # 'identity_file': "{{ }}", }
-          with_items: "{{ server.results }}"
-          register: instance_config_dict
+    - name: Force inventory refresh
+      ansible.builtin.meta: refresh_inventory
 
-        - name: Convert instance config dict to a list
-          ansible.builtin.set_fact:
-            instance_conf: "{{ instance_config_dict.results | map(attribute='ansible_facts.instance_conf_dict') | list }}"
-
-        - name: Dump instance config
-          ansible.builtin.copy:
-            content: |
-              # Molecule managed
-
-              {{ instance_conf | to_json | from_json | to_yaml }}
-            dest: "{{ molecule_instance_config }}"
-            mode: "0600"
+    - name: Fail if molecule group is missing
+      ansible.builtin.assert:
+        that: "'molecule' in groups"
+        fail_msg: |
+          molecule group was not found inside inventory groups: {{ groups }}
+      run_once: true # noqa: run-once[task]

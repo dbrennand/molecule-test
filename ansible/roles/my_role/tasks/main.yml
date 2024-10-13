@@ -11,3 +11,15 @@
 - name: new task again
   ansible.builtin.debug:
     msg: "New task again!"
+
+- name: Run get request
+  delegate_to: localhost
+  ansible.builtin.uri:
+    url: https://{{ inventory_hostname }}/get
+    method: GET
+    status_code: 200
+  register: get_request
+
+- name: Debug get request
+  ansible.builtin.debug:
+    var: get_request

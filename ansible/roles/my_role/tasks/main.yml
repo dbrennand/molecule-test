@@ -1,0 +1,13 @@
+---
+# tasks file for myrole
+- name: Task is running from within the role
+  ansible.builtin.debug:
+    msg: "This is a task from my_role."
+
+- name: new task!
+  ansible.builtin.debug:
+    msg: "New task!"
+
+- name: new task again
+  ansible.builtin.debug:
+    msg: "New task again!"

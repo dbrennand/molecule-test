@@ -23,3 +23,13 @@
 - name: Debug get request
   ansible.builtin.debug:
     var: get_request
+
+- name: Auth HTTP task
+  delegate_to: localhost
+  ansible.builtin.uri:
+    url: https://{{ inventory_hostname }}/basic-auth/username/password
+    method: GET
+    status_code: 200
+    user: username
+    password: "{{ hashi_password }}"
+  register: auth_request

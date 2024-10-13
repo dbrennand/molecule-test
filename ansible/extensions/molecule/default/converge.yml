@@ -1,3 +1,5 @@
 ---
 - name: Include a playbook from a collection
+  vars:
+    hashi_password: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=kv/data/{{ inventory_hostname }}:password validate_certs=False url=http://localhost:8200') }}"
   ansible.builtin.import_playbook: dbrennand.test.my_playbook

@@ -25,5 +25,5 @@ Test the collection playbook using `molecule`:
 
 ```
 cd ansible/extensions
-molecule converge
+ANSIBLE_HASHI_VAULT_TOKEN='<token>' molecule converge
 ```
